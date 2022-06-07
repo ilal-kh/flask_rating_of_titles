@@ -22,7 +22,6 @@ app = Flask(__name__)
 
 app.config.from_object(ProdConfig)
 
-print(ProdConfig.SQLALCHEMY_DATABASE_URI)
 engine = create_engine(ProdConfig.SQLALCHEMY_DATABASE_URI)
 
 

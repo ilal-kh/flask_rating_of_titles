@@ -24,6 +24,8 @@ app.config.from_object(ProdConfig)
 
 engine = create_engine(ProdConfig.SQLALCHEMY_DATABASE_URI)
 
+from models import *
+
 
 session = scoped_session(sessionmaker(
     autocommit=False, autoflush=False, bind=engine))
@@ -63,7 +65,7 @@ def setup_logger():
 
     formatter = logging.Formatter(
         '%(asctime)s:%(name)s:%(levelname)s:%(message)s')
-    file_handler = logging.FileHandler('log/api.log')
+    file_handler = logging.FileHandler('rating_of_titles/log/api.log')
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
 

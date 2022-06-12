@@ -50,13 +50,7 @@ app.config.update({
 
 from models import *
 
-
-def init_db():
-    # import all modules here that might define models so that
-    # they will be registered properly on the metadata.  Otherwise
-    # you will have to import them first before calling init_db()
-
-    Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 
 
 def setup_logger():
@@ -93,7 +87,7 @@ def get_user_titles(username):
     try:
         user_id = get_jwt_identity()
         titles = Title.get_users_titles_list(user_id=user_id,
-                                             username=username)
+                                             user_name=username)
     except Exception as e:
         logger.warning(
             f'Read action failed with errors: {e}')
@@ -101,14 +95,14 @@ def get_user_titles(username):
     return titles
 
 
-@app.route('/', methods=['POST'])
+@app.route('/<username>', methods=['POST'])
 @jwt_required()
 @use_kwargs(TitleSchema)
 @marshal_with(TitleSchema)
-def add_title(**kwargs):
+def add_title(username,**kwargs):
     try:
         user_id = get_jwt_identity()
-        new_title = Title(user_id=user_id, **kwargs)
+        new_title = Title(user_id=user_id, user_name=username, **kwargs)
         new_title.save()
     except Exception as e:
         logger.warning(
@@ -196,6 +190,7 @@ def handle_error(err):
 
 
 docs.register(get_all_titles)
+docs.register(get_user_titles)
 docs.register(add_title)
 docs.register(update_title)
 docs.register(delete_title)
